@@ -23,7 +23,7 @@ public class ControllerTest {
                 LocalDate.of(1970, 2, 20),
                 67
         );
-        filmController.validate(validFilm);
+        filmController.create(validFilm);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class ControllerTest {
         );
         Exception exception = assertThrows(
                 ValidationException.class,
-                () -> filmController.validate(validFilm2)
+                () -> filmController.create(validFilm2)
         );
         assertEquals("Продолжительность фильма должна быть положительным числом.", exception.getMessage());
     }
@@ -49,7 +49,7 @@ public class ControllerTest {
                 "Ivan",
                 LocalDate.of(1998, 9, 19)
         );
-        userController.validate(user);
+        userController.create(user);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ControllerTest {
         );
         Exception exception = assertThrows(
                 ValidationException.class,
-                () -> userController.validate(user2)
+                () -> userController.create(user2)
         );
         assertEquals("Некорректный формат email", exception.getMessage());
     }

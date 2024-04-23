@@ -79,7 +79,7 @@ public class FilmController {
         throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");
     }
 
-    void validate(Film film) {
+    private void validate(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             throw new ValidationException("Название фильма не может быть пустым");
         }

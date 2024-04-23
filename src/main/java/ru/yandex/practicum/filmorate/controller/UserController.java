@@ -77,7 +77,7 @@ public class UserController {
         throw new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден");
     }
 
-    void validate(User user) {
+    private void validate(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new ValidationException("Имейл должен быть указан");
         }
