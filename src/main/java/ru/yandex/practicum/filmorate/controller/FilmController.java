@@ -41,27 +41,30 @@ public class FilmController {
 
     @PostMapping
     public Film create(@RequestBody Film film) {
-        log.info("Пользователь хочет добавить в список фильм: \n"
-                + "Название - " + film.getName() + "\n"
-                + "Описание - " + film.getDescription() + "\n"
-                + "Продолжительность - " + film.getDuration() + "\n"
-                + "Дата релиза - " + film.getReleaseDate());
+        log.info("""
+                Пользователь хочет добавить в список фильм: \
+                Название - {}
+                Описание - {}
+                Продолжительность - {}
+                Дата релиза - {}""", film.getName(), film.getDescription(), film.getDuration(), film.getReleaseDate());
         validate(film);
         film.setId(getNextId());
         films.put(film.getId(), film);
-        log.info("Фильму был присовен ID " + film.getId());
+        log.info("Фильму был присовен ID {}", film.getId());
         return film;
     }
 
     @PutMapping
     public Film update(@RequestBody Film newFilm) {
-        log.info("Пользователь выбрал обновить фильм из списока\n"
-                + "Фильм для обновления:\n"
-                + "ID - " + newFilm.getId() + "\n"
-                + "Название - " + newFilm.getName() + "\n"
-                + "Описание - " + newFilm.getDescription() + "\n"
-                + "Продолжительность - " + newFilm.getDuration() + "\n"
-                + "Дата релиза - " + newFilm.getReleaseDate());
+        log.info("""
+                Пользователь выбрал обновить фильм из списока\
+                Фильм для обновления:
+                ID - {}
+                Название - {}
+                Описание - {}
+                Продолжительность - {}
+                Дата релиза - {}""", newFilm.getId(), newFilm.getName(), newFilm.getDescription(),
+                newFilm.getDuration(), newFilm.getReleaseDate());
 
         if (newFilm.getId() == null) {
             throw new ValidationException("Id должен быть указан");
@@ -73,7 +76,7 @@ public class FilmController {
             oldFim.setDuration(newFilm.getDuration());
             oldFim.setDescription(newFilm.getDescription());
             oldFim.setReleaseDate(newFilm.getReleaseDate());
-            log.info("Фильм " + oldFim.getName() + " успешно обновлен!");
+            log.info("Фильм {} успешно обновлен!", oldFim.getName());
             return oldFim;
         }
         throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");

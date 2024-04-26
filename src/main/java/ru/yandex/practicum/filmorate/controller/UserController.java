@@ -39,26 +39,29 @@ public class UserController {
 
     @PostMapping
     public User create(@RequestBody User user) {
-        log.info("Пользователь хочет добавить в список пользователя: \n"
-                + "email - " + user.getEmail() + "\n"
-                + "Login - " + user.getLogin() + "\n"
-                + "Имя - " + user.getName() + "\n"
-                + "День рождения - " + user.getBirthday());
+        log.info("""
+                Пользователь хочет добавить в список пользователя: \
+                email - {}
+                Login - {}
+                Имя - {}
+                День рождения - {}""", user.getEmail(), user.getLogin(), user.getName(), user.getBirthday());
         validate(user);
         user.setId(getNextId());
         users.put(user.getId(), user);
-        log.info("Пользователю был присовен ID " + user.getId());
+        log.info("Пользователю был присовен ID {}", user.getId());
         return user;
     }
 
     @PutMapping
     public User update(@RequestBody User newUser) {
-        log.info("Пользователь хочет обновить данные пользователя на:\n"
-                + "ID - " + newUser.getId() + "\n"
-                + "email - " + newUser.getEmail() + "\n"
-                + "Login - " + newUser.getLogin() + "\n"
-                + "Имя - " + newUser.getName() + "\n"
-                + "День рождения - " + newUser.getBirthday());
+        log.info("""
+                        Пользователь хочет обновить данные пользователя на:\
+                        ID - {}
+                        email - {}
+                        Login - {}
+                        Имя - {}
+                        День рождения - {}""",
+                newUser.getId(), newUser.getEmail(), newUser.getLogin(), newUser.getName(), newUser.getBirthday());
 
         if (newUser.getId() == null) {
             log.error("Не указан ID");
@@ -71,7 +74,7 @@ public class UserController {
             oldUser.setLogin(newUser.getLogin());
             oldUser.setName(newUser.getName());
             oldUser.setBirthday(newUser.getBirthday());
-            log.info("Данные пользователя " + oldUser.getName() + " успешно обновлены!");
+            log.info("Данные пользователя {} успешно обновлены!", oldUser.getName());
             return oldUser;
         }
         throw new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден");
