@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 
@@ -12,8 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class ControllerTest {
-    static FilmController filmController = new FilmController();
-    static UserController userController = new UserController();
+    static InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
+    static InMemoryUserStorage userStorage = new InMemoryUserStorage();
+    static UserService userService = new UserService(userStorage);
+    static FilmService filmService = new FilmService(userStorage, filmStorage);
+
+    static FilmController filmController = new FilmController(filmService, filmStorage);
+    static UserController userController = new UserController(userService, userStorage);
 
     @Test
     void validateFilmOk() {

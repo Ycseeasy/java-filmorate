@@ -23,8 +23,9 @@ public class FilmService {
     @Autowired
     public InMemoryFilmStorage filmStorage;
 
-    public FilmService(InMemoryUserStorage storage) {
+    public FilmService(InMemoryUserStorage storage, InMemoryFilmStorage filmStorage) {
         this.storage = storage;
+        this.filmStorage = filmStorage;
     }
 
     public List<User> whoLikes(Film film) {
