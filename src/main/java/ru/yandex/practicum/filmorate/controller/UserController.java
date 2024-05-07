@@ -1,105 +1,83 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/users")
 @Slf4j
+@RequestMapping("/users")
 public class UserController {
-    private final Map<Long, User> users = new HashMap<>();
+    @Autowired
+    private final UserService service;
+    @Autowired
+    private final InMemoryUserStorage storage;
 
-    private long getNextId() {
-        long currentMaxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+    public UserController(UserService service, InMemoryUserStorage storage) {
+        this.service = service;
+        this.storage = storage;
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Collection<User> findAll() {
         log.info("Пользователь выбрал отобразить список пользователей");
-        return users.values();
+        return storage.getAll();
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.OK)
     public User create(@RequestBody User user) {
-        log.info("""
-                Пользователь хочет добавить в список пользователя: \
-                email - {}
-                Login - {}
-                Имя - {}
-                День рождения - {}""", user.getEmail(), user.getLogin(), user.getName(), user.getBirthday());
-        validate(user);
-        user.setId(getNextId());
-        users.put(user.getId(), user);
-        log.info("Пользователю был присовен ID {}", user.getId());
-        return user;
+        return storage.create(user);
     }
 
     @PutMapping
+    @ResponseStatus(HttpStatus.OK)
     public User update(@RequestBody User newUser) {
-        log.info("""
-                        Пользователь хочет обновить данные пользователя на:\
-                        ID - {}
-                        email - {}
-                        Login - {}
-                        Имя - {}
-                        День рождения - {}""",
-                newUser.getId(), newUser.getEmail(), newUser.getLogin(), newUser.getName(), newUser.getBirthday());
-
-        if (newUser.getId() == null) {
-            log.error("Не указан ID");
-            throw new ValidationException("Id должен быть указан");
-        }
-        validate(newUser);
-        if (users.containsKey(newUser.getId())) {
-            User oldUser = users.get(newUser.getId());
-            oldUser.setEmail(newUser.getEmail());
-            oldUser.setLogin(newUser.getLogin());
-            oldUser.setName(newUser.getName());
-            oldUser.setBirthday(newUser.getBirthday());
-            log.info("Данные пользователя {} успешно обновлены!", oldUser.getName());
-            return oldUser;
-        }
-        throw new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден");
+        return storage.update(newUser);
     }
 
-    private void validate(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new ValidationException("Имейл должен быть указан");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationException("Некорректный формат email");
-        }
-        if (user.getLogin() == null || user.getLogin().isBlank()) {
-            throw new ValidationException("Логин должен быть указан");
-        }
-        if (user.getLogin().length() != user.getLogin().trim().length()) {
-            throw new ValidationException("Логин не может содержать пробелы");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            log.warn("Вместо имени был использован логин");
-            user.setName(user.getLogin());
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения не может быть в будущем");
-        }
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/{id}/friends/{addId}")
+    public User addFriend(@PathVariable("id") long id, @PathVariable("addId") long friendId) {
+        return service.addFriend(id, friendId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{id}/friends/{deleteId}")
+    public User deleteFriend(@PathVariable("id") long id, @PathVariable("deleteId") long friendId) {
+        return service.deleteFriend(id, friendId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriendsList(@PathVariable("id") long id) {
+        return service.getFriendsList(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriend(@PathVariable("id") long id, @PathVariable("otherId") long otherId) {
+        return service.getMutualFriend(id, otherId);
     }
 }
 
+/* НУЖНО ДОБАВИТЬ:
+1. Коды ответа
+2. Вывод общих друзей у 2-х пользователей
+3. Обработку ошибок через утили сборщик ошибок
+ */
