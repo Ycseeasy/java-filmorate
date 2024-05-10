@@ -16,7 +16,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final ValidationException e) {
         return new ErrorResponse(
-                "ValidationException",
+                "Ошибка Валидации",
                 e.getMessage()
         );
     }
@@ -25,7 +25,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
         return new ErrorResponse(
-                "NotFoundException",
+                "Ошибка поиска данных",
                 e.getMessage()
         );
     }
@@ -34,7 +34,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleLikesException(final LikesException e) {
         return new ErrorResponse(
-                "LikesException",
+                "Ошмбка сохранения лайка",
                 e.getMessage()
         );
     }
@@ -43,7 +43,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleFriendsException(final FriendsException e) {
         return new ErrorResponse(
-                "FriendsException",
+                "Ошибка списка друзей",
                 e.getMessage()
         );
     }

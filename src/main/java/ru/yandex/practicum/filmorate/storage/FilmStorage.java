@@ -12,4 +12,6 @@ public interface FilmStorage {
     public Film search(long id);
 
     public List<Film> getAll();
+
+    public List<Film> getTopLikest(int count);
 }

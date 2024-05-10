@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,6 @@ public class InMemoryUserStorage implements UserStorage {
                 Login - {}
                 Имя - {}
                 День рождения - {}""", user.getEmail(), user.getLogin(), user.getName(), user.getBirthday());
-        validate(user);
         user.setId(getNextId());
         users.put(user.getId(), user);
         log.info("Пользователю был присовен ID {}", user.getId());
@@ -48,7 +46,6 @@ public class InMemoryUserStorage implements UserStorage {
             log.error("Не указан ID");
             throw new ValidationException("Id должен быть указан");
         }
-        validate(newUser);
         if (users.containsKey(newUser.getId())) {
             User oldUser = users.get(newUser.getId());
             oldUser.setEmail(newUser.getEmail());
@@ -81,27 +78,5 @@ public class InMemoryUserStorage implements UserStorage {
                 .max()
                 .orElse(0);
         return ++currentMaxId;
-    }
-
-    private void validate(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new ValidationException("Имейл должен быть указан");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationException("Некорректный формат email");
-        }
-        if (user.getLogin() == null || user.getLogin().isBlank()) {
-            throw new ValidationException("Логин должен быть указан");
-        }
-        if (user.getLogin().length() != user.getLogin().trim().length()) {
-            throw new ValidationException("Логин не может содержать пробелы");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            log.warn("Вместо имени был использован логин");
-            user.setName(user.getLogin());
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения не может быть в будущем");
-        }
     }
 }

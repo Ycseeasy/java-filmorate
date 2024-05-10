@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FriendsException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -14,17 +14,12 @@ import java.util.Set;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    public InMemoryUserStorage storage;
+    private final InMemoryUserStorage storage;
 
-    public UserService(InMemoryUserStorage storage) {
-        this.storage = storage;
-    }
-
-    public List<User> getFriendsList(Long userId) {
-        User user = storage.search(userId);
+    public List<User> getFriendsList(User user) {
         List<User> friendsList = new ArrayList<>();
         Set<Long> friendsIdList = user.getFriendsId();
         for (long id : friendsIdList) {
@@ -33,35 +28,29 @@ public class UserService {
         return friendsList;
     }
 
-    public User deleteFriend(long userId, long friendId) {
-        User user = storage.search(userId);
-        User friend = storage.search(friendId);
-
-        if (user.getFriendsId().remove(friendId)) {
-            friend.getFriendsId().remove(userId);
-            log.info("Пользователь c id - {} успешно удалён из друзей", friendId);
+    public User deleteFriend(User user, User friend) {
+        if (user.getFriendsId().remove(friend.getId())) {
+            friend.getFriendsId().remove(user.getId());
+            log.info("Пользователь c id - {} успешно удалён из друзей пользователя с id - {}",
+                    friend.getId(), user.getId());
         }
         return user;
     }
 
-    public User addFriend(long userId, long friendId) {
-        User user = storage.search(userId);
-        User friend = storage.search(friendId);
+    public User addFriend(User user, User friend) {
 
-        if (user.getFriendsId().add(friendId)) {
-            friend.getFriendsId().add(userId);
-            log.info("Пользователь c id - {} успешно добавлен в друзья", friendId);
+        if (user.getFriendsId().add(friend.getId())) {
+            friend.getFriendsId().add(user.getId());
+            log.info("Пользователь c id - {} успешно добавлен в друзья пользователю с id - {}",
+                    friend.getId(), user.getId());
         } else {
-            throw new FriendsException("Пользователь c id - " + friendId + " уже есть в списке друзей");
+            throw new FriendsException("Пользователь c id - " + friend.getId() + " уже есть в списке друзей");
         }
         return user;
     }
 
-    public List<User> getMutualFriend(long userId, long friendId) {
-        log.info("Выгрузка общих друзей у пользователей с ID: {} и {}", userId, friendId);
+    public List<User> getMutualFriend(User user, User friend) {
         List<User> commonFriendsList = new ArrayList<>();
-        User user = storage.search(userId);
-        User friend = storage.search(friendId);
         Set<Long> userFriendsSet = user.getFriendsId();
         Set<Long> friendFriendsSet = friend.getFriendsId();
 
@@ -75,5 +64,21 @@ public class UserService {
             throw new NotFoundException("Общие друзья не найдены");
         }
         return commonFriendsList;
+    }
+
+    public User create(User user) {
+        return storage.create(user);
+    }
+
+    public User update(User user) {
+        return storage.update(user);
+    }
+
+    public User search(long id) {
+        return storage.search(id);
+    }
+
+    public List<User> getAll() {
+        return storage.getAll();
     }
 }

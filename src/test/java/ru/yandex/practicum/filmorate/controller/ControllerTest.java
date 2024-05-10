@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class ControllerTest {
-    static InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
-    static InMemoryUserStorage userStorage = new InMemoryUserStorage();
-    static UserService userService = new UserService(userStorage);
-    static FilmService filmService = new FilmService(userStorage, filmStorage);
 
-    static FilmController filmController = new FilmController(filmService, filmStorage);
-    static UserController userController = new UserController(userService, userStorage);
+    InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
+    InMemoryUserStorage userStorage = new InMemoryUserStorage();
+    UserService userService = new UserService(userStorage);
+    FilmService filmService = new FilmService(filmStorage, userStorage);
+    FilmController filmController = new FilmController(filmService);
+    UserController userController = new UserController(userService);
 
     @Test
     void validateFilmOk() {

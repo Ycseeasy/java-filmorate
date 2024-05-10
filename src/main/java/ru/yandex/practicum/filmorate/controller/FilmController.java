@@ -1,59 +1,60 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 @RequestMapping("/films")
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class FilmController {
-    @Autowired
-    private final FilmService service;
-    @Autowired
-    private final InMemoryFilmStorage storage;
 
-    public FilmController(FilmService service, InMemoryFilmStorage storage) {
-        this.service = service;
-        this.storage = storage;
-    }
+    private final FilmService service;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Collection<Film> findAll() {
         log.info("Пользователь выбрал отобразить список фильмов");
-        return storage.getAll();
+        return service.getAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public Film create(@RequestBody Film film) {
-        return storage.create(film);
+        validate(film);
+        return service.create(film);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public Film update(@RequestBody Film newFilm) {
-        return storage.update(newFilm);
+        validate(newFilm);
+        return service.update(newFilm);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}/like/{addId}")
     public Film addLike(@PathVariable("id") long id, @PathVariable("addId") long userId) {
-        return service.addLike(id, userId);
+        Film film = service.searchFilm(id);
+        User user = service.searchUser(userId);
+        return service.addLike(film, user);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}/like/{deleteId}")
     public Film deleteLike(@PathVariable("id") long id, @PathVariable("deleteId") long userId) {
-        return service.deleteLike(id, userId);
+        Film film = service.searchFilm(id);
+        User user = service.searchUser(userId);
+        return service.deleteLike(film, user);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -64,10 +65,20 @@ public class FilmController {
         }
         return service.getTopLikest(count);
     }
-}
 
-/* НУЖНО ДОБАВИТЬ:
-1. Коды ответа
-2. Вывод списка всех фильмов по рейтингу (Лайков)
-3. Обработку ошибок через утили сборщик ошибок
- */
+    private void validate(Film film) {
+        LocalDate filmBirthday = LocalDate.of(1895, 12, 28);
+        if (film.getName() == null || film.getName().isBlank()) {
+            throw new ValidationException("Название фильма не может быть пустым");
+        }
+        if (film.getDescription().length() > 200) {
+            throw new ValidationException("Максимальная длина описания — 200 символов");
+        }
+        if (film.getDuration() <= 0) {
+            throw new ValidationException("Продолжительность фильма должна быть положительным числом.");
+        }
+        if (film.getReleaseDate().isBefore(filmBirthday)) {
+            throw new ValidationException("Дата релиза не может быть раньше даты создания кино");
+        }
+    }
+}
