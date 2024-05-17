@@ -2,7 +2,9 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.AgeRating;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -30,7 +32,9 @@ public class ControllerTest {
                 "LOL8o0U1KDhgMkn",
                 "ofqPRiyyYvHShP5xNP8iOHs5QzGO4dqwSdfZ1PeggkLav8zPqf",
                 LocalDate.of(1970, 2, 20),
-                67
+                67,
+                Genre.ACTION_MOVIE,
+                AgeRating.R
         );
         filmController.create(validFilm);
     }
@@ -41,7 +45,9 @@ public class ControllerTest {
                 "LOL8o0U1KDhgMkn",
                 "ofqPRiyyYvHShP5xNP8iOHs5QzGO4dqwSdfZ1PeggkLav8zPqf",
                 LocalDate.of(1971, 2, 20),
-                -102
+                -102,
+                Genre.ACTION_MOVIE,
+                AgeRating.R
         );
         Exception exception = assertThrows(
                 ValidationException.class,
