@@ -15,12 +15,16 @@ public class Film {
     private LocalDate releaseDate;
     private long duration;
     private Set<Long> likes;
+    private Genre genre;
+    private AgeRating rating;
 
-    public Film(String name, String description, LocalDate releaseDate, long duration) {
+    public Film(String name, String description, LocalDate releaseDate, long duration, Genre genre, AgeRating rating) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.likes = new HashSet<>();
+        this.genre = genre;
+        this.rating = rating;
     }
 }
