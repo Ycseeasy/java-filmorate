@@ -51,8 +51,8 @@ public class BaseRepository<T> {
                         ps.setObject(idx + 1, params[idx]);
                     }
                     return ps;
-                }
-                , keyHolder);
+                },
+                keyHolder);
 
         Long id = keyHolder.getKeyAs(Long.class);
 
