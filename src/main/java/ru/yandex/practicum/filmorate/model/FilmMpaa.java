@@ -7,8 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Genre {
+public class FilmMpaa {
 
     private long id;
-    private String name;
+    private long filmId;
+    private long mpaaId;
+
+    public FilmMpaa(long filmId, long mpaaId) {
+        this.filmId = filmId;
+        this.mpaaId = mpaaId;
+    }
 }
