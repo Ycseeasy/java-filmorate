@@ -31,8 +31,8 @@ public class LikeRepository extends BaseRepository<Like> {
         return like;
     }
 
-    public boolean deleteLike(long l_user_id, long l_film_id) {
-        return delete(DELETE, l_user_id, l_film_id);
+    public boolean deleteLike(long getWhoLikedId, long getWhatLikedId) {
+        return delete(DELETE, getWhoLikedId, getWhatLikedId);
     }
 
     public Optional<Like> findLike(long userId, long filmId) {
