@@ -8,12 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Friendship {
-    private long id;
     private long userId;
     private long friendId;
-
-    public Friendship(long userId, long friendId) {
-        this.userId = userId;
-        this.friendId = friendId;
-    }
 }

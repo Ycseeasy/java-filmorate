@@ -17,12 +17,10 @@ erDiagram
         bigint duration
     }
     friendships {
-        bigint friendship_id PK
         bigint fs_user_id FK
         bigint fs_friend_id FK
     }
     likes {
-        bigint likes_id PK
         bigint l_user_id FK
         bigint l_film_id FK
     }
@@ -35,12 +33,10 @@ erDiagram
         varchar(255) mpaa
     }
     filmsMpa {
-        bigint filmMpaa_id PK
         bigint fm_film_id FK
         bigint fm_mpaa_id FK
     }
     filmsGenre {
-        bigint filmGenre_id PK
         bigint fg_film_id FK
         bigint fg_genre_id FK
     }

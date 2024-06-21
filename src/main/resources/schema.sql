@@ -26,20 +26,18 @@ DROP TABLE IF EXISTS filmMpaa CASCADE;
     );
 
     CREATE TABLE IF NOT EXISTS friendship (
-    friendship_id BIGINT NOT NULL PRIMARY KEY auto_increment,
     fs_user_id BIGINT NOT NULL,
     fs_friend_id BIGINT NOT NULL,
     UNIQUE(fs_user_id, fs_friend_id),
-    CONSTRAINT friendship_pk PRIMARY KEY (friendship_id),
+    CONSTRAINT friendship_pk PRIMARY KEY (fs_user_id, fs_friend_id),
     CONSTRAINT fs_user_pk FOREIGN KEY (fs_user_id) REFERENCES users(user_id),
     CONSTRAINT fs_friend_pk FOREIGN KEY (fs_friend_id) REFERENCES users(user_id)
     );
 
     CREATE TABLE IF NOT EXISTS likes (
-    likes_id BIGINT NOT NULL PRIMARY KEY auto_increment,
     l_user_id BIGINT NOT NULL,
     l_film_id BIGINT NOT NULL,
-    CONSTRAINT likes_pk PRIMARY KEY (likes_id),
+    CONSTRAINT likes_pk PRIMARY KEY (l_user_id, l_film_id),
     CONSTRAINT l_user_pk FOREIGN KEY (l_user_id) REFERENCES users(user_id),
     CONSTRAINT l_film_pk FOREIGN KEY (l_film_id) REFERENCES films(film_id)
     );
@@ -57,21 +55,19 @@ DROP TABLE IF EXISTS filmMpaa CASCADE;
     );
 
     CREATE TABLE IF NOT EXISTS filmMpaa (
-    filmMpaa_id BIGINT NOT NULL PRIMARY KEY auto_increment,
     fm_film_id BIGINT NOT NULL,
     fm_mpaa_id BIGINT NOT NULL,
-    UNIQUE(fm_film_id),
-    CONSTRAINT filmMpaa_pk PRIMARY KEY (filmMpaa_id),
+    UNIQUE(fm_film_id, fm_mpaa_id),
+    CONSTRAINT filmMpaa_pk PRIMARY KEY (fm_film_id, fm_mpaa_id),
     CONSTRAINT fm_film_pk FOREIGN KEY (fm_film_id) REFERENCES films(film_id),
     CONSTRAINT fm_mpaa_pk FOREIGN KEY (fm_mpaa_id) REFERENCES mpaa_ratings(mpaa_id)
     );
 
     CREATE TABLE IF NOT EXISTS filmGenre (
-    filmGenre_id BIGINT NOT NULL PRIMARY KEY auto_increment,
     fg_film_id BIGINT NOT NULL,
     fg_genre_id BIGINT NOT NULL,
     UNIQUE(fg_film_id, fg_genre_id),
-    CONSTRAINT filmGenre_pk PRIMARY KEY (filmGenre_id),
+    CONSTRAINT filmGenre_pk PRIMARY KEY (fg_film_id, fg_genre_id),
     CONSTRAINT fg_film_pk FOREIGN KEY (fg_film_id) REFERENCES films(film_id),
     CONSTRAINT fg_genre_pk FOREIGN KEY (fg_genre_id) REFERENCES genres(genre_id)
     );

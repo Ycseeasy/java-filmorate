@@ -50,7 +50,7 @@ public class UserService {
         userBase.findById(friendId);
         Optional<Friendship> searchResult = friendshipBase.findFriendship(userId, friendId);
         if (searchResult.isPresent()) {
-            if (friendshipBase.deleteFriendship(searchResult.get().getId())) {
+            if (friendshipBase.deleteFriendship(userId, friendId)) {
                 return user;
             } else {
                 throw new InternalServerException("Не удалось удалить пользователя из списка друзей");

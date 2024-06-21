@@ -9,12 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FilmGenre {
 
-    private long id;
     private long filmId;
     private long genreId;
 
-    public FilmGenre(long filmId, long genreId) {
-        this.filmId = filmId;
-        this.genreId = genreId;
-    }
 }

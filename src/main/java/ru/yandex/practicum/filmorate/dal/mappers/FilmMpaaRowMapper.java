@@ -12,9 +12,8 @@ public class FilmMpaaRowMapper implements RowMapper<FilmMpaa> {
     @Override
     public FilmMpaa mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         FilmMpaa filmMpa = new FilmMpaa();
-        filmMpa.setId(resultSet.getLong("filmMpa_id"));
         filmMpa.setFilmId(resultSet.getLong("fm_film_id"));
-        filmMpa.setMpaaId(resultSet.getLong("fm_mpa_id"));
+        filmMpa.setMpaaId(resultSet.getLong("fm_mpaa_id"));
         return filmMpa;
     }
 }

@@ -19,4 +19,20 @@ public class Film {
     private long duration;
     private Mpa mpa;
     private List<Genre> genres;
+
+    public Film(String name, String description, LocalDate releaseDate, long duration, Mpa mpa, List<Genre> genres) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+        this.genres = genres;
+    }
+
+    public Film(String name, String description, LocalDate releaseDate, long duration) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+    }
 }

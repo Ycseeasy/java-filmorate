@@ -34,18 +34,19 @@ public class FilmRepository extends BaseRepository<Film> {
             "JOIN mpaa_ratings as mr ON fm.fm_mpaa_id=mr.mpaa_id\n" +
             "WHERE f.film_id = ?";
     private static final String FIND_POPULAR_FILMS = "SELECT f.film_id,\n" +
-            "    f.name,\n" +
-            "    f.description,\n" +
-            "    f.releaseDate,\n" +
-            "    f.duration,\n" +
-            "    mr.mpaa_id,\n" +
-            "    mr.mpaa\n" +
-            "FROM films as f\n" +
+            "   f.name,\n" +
+            "   f.description,\n" +
+            "   f.releaseDate,\n" +
+            "   f.duration,\n" +
+            "   mr.mpaa_id,\n" +
+            "   mr.mpaa,\n" +
+            "   COUNT(l.l_film_id)\n" +
+            "FROM likes as l\n" +
+            "JOIN films as f ON f.film_id=l.l_film_id\n" +
             "JOIN filmmpaa as fm ON f.film_id=fm.fm_film_id\n" +
             "JOIN mpaa_ratings as mr ON fm.fm_mpaa_id=mr.mpaa_id\n" +
-            "JOIN likes as l ON f.film_id=l.l_film_id\n" +
             "GROUP BY f.film_id, mr.mpaa_id, mr.mpaa\n" +
-            "ORDER BY COUNT(l.likes_id) DESC\n" +
+            "ORDER BY COUNT(l.l_film_id) DESC\n" +
             "LIMIT ?";
     private static final String INSERT_QUERY = "INSERT INTO films(name, description, releaseDate, duration)" +
             " VALUES (?, ?, ?, ?)";
