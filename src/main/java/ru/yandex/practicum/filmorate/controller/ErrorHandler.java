@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.FriendsException;
+import ru.yandex.practicum.filmorate.exception.InternalServerException;
 import ru.yandex.practicum.filmorate.exception.LikesException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -34,7 +35,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleLikesException(final LikesException e) {
         return new ErrorResponse(
-                "Ошмбка сохранения лайка",
+                "Ошибка сохранения лайка",
                 e.getMessage()
         );
     }
@@ -44,6 +45,15 @@ public class ErrorHandler {
     public ErrorResponse handleFriendsException(final FriendsException e) {
         return new ErrorResponse(
                 "Ошибка списка друзей",
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleFriendsException(final InternalServerException e) {
+        return new ErrorResponse(
+                "Ошибка",
                 e.getMessage()
         );
     }

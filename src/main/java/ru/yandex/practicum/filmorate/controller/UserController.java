@@ -37,6 +37,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public User create(@RequestBody User user) {
+        log.info("Пользователь выбрал добавления нового пользователя");
         validate(user);
         return service.create(user);
     }
@@ -44,6 +45,10 @@ public class UserController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public User update(@RequestBody User newUser) {
+        log.info("Пользователь выбрал обновить данные о пользователе");
+        if (newUser.getId() == null) {
+            throw new ValidationException("Id должен быть указан");
+        }
         validate(newUser);
         return service.update(newUser);
     }
@@ -51,33 +56,29 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}/friends/{addId}")
     public User addFriend(@PathVariable("id") long id, @PathVariable("addId") long friendId) {
-        User user = service.search(id);
-        User friend = service.search(friendId);
-        return service.addFriend(user, friend);
+        log.info("Пользователь выбрал добавить друга");
+        return service.addFriend(id, friendId);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}/friends/{deleteId}")
     public User deleteFriend(@PathVariable("id") long id, @PathVariable("deleteId") long friendId) {
-        User user = service.search(id);
-        User friend = service.search(friendId);
-        return service.deleteFriend(user, friend);
+        log.info("Пользователь выбрал удалить друга");
+        return service.deleteFriend(id, friendId);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}/friends")
     public Collection<User> getFriendsList(@PathVariable("id") long id) {
-        User user = service.search(id);
-        return service.getFriendsList(user);
+        log.info("Пользователь выбрал отобразить список друщей у пользователя");
+        return service.getFriendsList(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}/friends/common/{friendId}")
     public Collection<User> getCommonFriend(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
-        User user = service.search(id);
-        User friend = service.search(friendId);
-        log.info("Поиск общих друщей у пользователей с id {} и {}", user.getId(), friend.getId());
-        return service.getMutualFriend(user, friend);
+        log.info("Пользователь выбрал поиск общих друщей у пользователей");
+        return service.getMutualFriend(id, friendId);
     }
 
     private void validate(User user) {
@@ -97,6 +98,7 @@ public class UserController {
             log.warn("Вместо имени был использован логин - {}", user.getLogin());
             user.setName(user.getLogin());
         }
+
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Дата рождения не может быть в будущем");
         }

@@ -5,10 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Genre {
-
-    private long id;
-    private String name;
+@AllArgsConstructor
+public class Friendship {
+    private long userId;
+    private long friendId;
 }
